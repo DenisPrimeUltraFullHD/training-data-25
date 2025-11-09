@@ -1,5 +1,3 @@
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.ArrayList;
@@ -7,17 +5,16 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 
 /**
- * Загальний клас BasicDataOperation координує роботу різних структур даних.
+ * Загальний клас BasicDataOperation координує роботу різних структур даних (тип Character).
  * 
  * <p>Цей клас служить центральною точкою для демонстрації операцій з різними
- * колекціями Java: List, Queue та Set. Він об'єднує функціональність всіх
- * спеціалізованих класів для комплексного аналізу даних LocalDateTime.</p>
+ * колекціями Java: Vector, PriorityQueue, TreeSet та Map з Canary.</p>
  * 
  * <p>Основні можливості:</p>
  * <ul>
  *   <li>Координація операцій з різними типами колекцій</li>  
  *   <li>Порівняльний аналіз продуктивності структур даних</li>
- *   <li>Централізоване управління обробкою даних</li>
+ *   <li>Централізоване управління обробкою символів</li>
  *   <li>Демонстрація переваг різних колекцій</li>
  * </ul>
  * 
@@ -32,15 +29,15 @@ import java.util.Queue;
  * </pre>
  */
 public class BasicDataOperation {
-    static final String PATH_TO_DATA_FILE = "list/LocalDateTime.data";
+    static final String PATH_TO_DATA_FILE = "list/Character.data";
 
-    LocalDateTime dateTimeValueToSearch;
-    LocalDateTime[] dateTimeArray;
+    Character charValueToSearch;
+    Character[] charArray;
 
     private static final String SEPARATOR = "\n" + "=".repeat(80) + "\n";
-    private static final String USAGE_MESSAGE = "Використання: java BasicDataOperation <пошукове-значення> \n" +
+    private static final String USAGE_MESSAGE = "Використання: java BasicDataOperation <пошуковий-символ> \n" +
 "Приклад:\n" +
-"  java BasicDataOperation \"2025-01-02T20:42:25Z\"";
+"  java BasicDataOperation \"&\"";
 
     public static void main(String[] args) {
         if (args.length != 1) {
@@ -50,11 +47,8 @@ public class BasicDataOperation {
 
         String searchValue = args[0];
 
-        // Валідація введеного значення дати
-        try {
-            LocalDateTime.parse(searchValue, DateTimeFormatter.ISO_DATE_TIME);
-        } catch (Exception e) {
-            System.out.println("Помилка: Невірний формат дати-часу. Використовуйте ISO формат (наприклад: 2024-03-16T00:12:38Z)");
+        if (searchValue == null || searchValue.length() == 0) {
+            System.out.println("Помилка: порожній пошуковий символ.");
             return;
         }
 
@@ -69,13 +63,13 @@ public class BasicDataOperation {
      */
     private void executeOperations(String[] args) {
         System.out.println(SEPARATOR);
-        System.out.println("🚀 РОЗПОЧАТО АНАЛІЗ ДАНИХ LocalDateTime 🚀");
-        System.out.println("Пошуковий параметр: " + args[0]);
+        System.out.println("🚀 РОЗПОЧАТО АНАЛІЗ ДАНИХ типу Character 🚀");
+        System.out.println("Пошуковий символ: " + args[0]);
         System.out.println(SEPARATOR);
         
-        // Підготовка даних та перевірка формату
-        dateTimeValueToSearch = LocalDateTime.parse(args[0], DateTimeFormatter.ISO_DATE_TIME);
-        dateTimeArray = DataFileHandler.loadArrayFromFile(PATH_TO_DATA_FILE);
+        // Підготовка даних
+        this.charValueToSearch = args[0].charAt(0);
+        this.charArray = DataFileHandler.loadArrayFromFile(PATH_TO_DATA_FILE);
         
         runAllOperations();
 
@@ -90,12 +84,11 @@ public class BasicDataOperation {
      * @param args Аргументи для передачі до класу
      */
     private void runListOperations() {
-        System.out.println("📋 ОБРОБКА ДАНИХ З ВИКОРИСТАННЯМ LIST");
+        System.out.println("📋 ОБРОБКА ДАНИХ З ВИКОРИСТАННЯМ LIST (Vector<Character>)");
         System.out.println("-".repeat(50));
         
         try {
-            // Створення екземпляру класу з передаванням даних
-            BasicDataOperationUsingList listProcessor = new BasicDataOperationUsingList(dateTimeValueToSearch, dateTimeArray);
+            BasicDataOperationUsingList listProcessor = new BasicDataOperationUsingList(charValueToSearch, charArray);
             listProcessor.executeDataOperations();
         } catch (Exception e) {
             System.out.println("❌ Помилка при роботі з List: " + e.getMessage());
@@ -109,12 +102,11 @@ public class BasicDataOperation {
      * @param args Аргументи для передачі до класу
      */
     private void runQueueOperations() {
-        System.out.println("🔄 ОБРОБКА ДАНИХ З ВИКОРИСТАННЯМ QUEUE");
+        System.out.println("🔄 ОБРОБКА ДАНИХ З ВИКОРИСТАННЯМ QUEUE (PriorityQueue<Character>)");
         System.out.println("-".repeat(50));
         
         try {
-            // Створення екземпляру класу з передаванням даних
-            BasicDataOperationUsingQueue queueProcessor = new BasicDataOperationUsingQueue(dateTimeValueToSearch, dateTimeArray);
+            BasicDataOperationUsingQueue queueProcessor = new BasicDataOperationUsingQueue(charValueToSearch, charArray);
             queueProcessor.runDataProcessing();
         } catch (Exception e) {
             System.out.println("❌ Помилка при роботі з Queue: " + e.getMessage());
@@ -128,12 +120,11 @@ public class BasicDataOperation {
      * @param args Аргументи для передачі до класу
      */
     private void runSetOperations() {
-        System.out.println("🔍 ОБРОБКА ДАНИХ З ВИКОРИСТАННЯМ SET");
+        System.out.println("🔍 ОБРОБКА ДАНИХ З ВИКОРИСТАННЯМ SET (TreeSet<Character>)");
         System.out.println("-".repeat(50));
         
-        try {
-            // Створення екземпляру класу з передаванням даних           
-            BasicDataOperationUsingSet setProcessor = new BasicDataOperationUsingSet(dateTimeValueToSearch, dateTimeArray);
+        try {         
+            BasicDataOperationUsingSet setProcessor = new BasicDataOperationUsingSet(charValueToSearch, charArray);
             setProcessor.executeDataAnalysis();
         } catch (Exception e) {
             System.out.println("❌ Помилка при роботі з Set: " + e.getMessage());
@@ -162,3 +153,4 @@ public class BasicDataOperation {
         runSetOperations();
     }
 }
+// Файл актуален — дополнительных изменений не требуется.

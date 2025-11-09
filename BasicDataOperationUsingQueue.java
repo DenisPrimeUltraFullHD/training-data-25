@@ -1,48 +1,47 @@
-import java.time.LocalDateTime;
 import java.util.Queue;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.PriorityQueue;
 
 /**
- * Клас BasicDataOperationUsingQueue реалізує роботу з колекціями типу Queue для LocalDateTime.
+ * Клас BasicDataOperationUsingQueue реалізує роботу з колекціями типу Queue для Character.
  * 
  * <p>Основні функції класу:</p>
  * <ul>
  *   <li>{@link #runDataProcessing()} - Запускає комплекс операцій з даними.</li>
- *   <li>{@link #performArraySorting()} - Упорядковує масив LocalDateTime.</li>
- *   <li>{@link #findInArray()} - Пошук значення в масиві LocalDateTime.</li>
+ *   <li>{@link #performArraySorting()} - Упорядковує масив Character.</li>
+ *   <li>{@link #findInArray()} - Пошук значення в масиві Character.</li>
  *   <li>{@link #locateMinMaxInArray()} - Знаходить мінімальне і максимальне значення в масиві.</li>
- *   <li>{@link #findInQueue()} - Пошук значення в черзі LocalDateTime.</li>
+ *   <li>{@link #findInQueue()} - Пошук значення в черзі Character.</li>
  *   <li>{@link #locateMinMaxInQueue()} - Знаходить граничні значення в черзі.</li>
  *   <li>{@link #performQueueOperations()} - Виконує операції peek і poll з чергою.</li>
  * </ul>
  * 
  */
 public class BasicDataOperationUsingQueue {
-    private LocalDateTime dateTimeValueToSearch;
-    private LocalDateTime[] dateTimeArray;
-    private Queue<LocalDateTime> dateTimeQueue;
+    private Character charValueToSearch;
+    private Character[] charArray;
+    private Queue<Character> charQueue;
 
     /**
      * Конструктор, який iнiцiалiзує об'єкт з готовими даними.
      * 
-     * @param dateTimeValueToSearch Значення для пошуку
-     * @param dateTimeArray Масив LocalDateTime
+     * @param charValueToSearch Значення для пошуку
+     * @param charArray Масив Character
      */
-    BasicDataOperationUsingQueue(LocalDateTime dateTimeValueToSearch, LocalDateTime[] dateTimeArray) {
-        this.dateTimeValueToSearch = dateTimeValueToSearch;
-        this.dateTimeArray = dateTimeArray;
-        this.dateTimeQueue = new PriorityQueue<>(Arrays.asList(dateTimeArray));
+    BasicDataOperationUsingQueue(Character charValueToSearch, Character[] charArray) {
+        this.charValueToSearch = charValueToSearch;
+        this.charArray = charArray;
+        this.charQueue = new PriorityQueue<>(Arrays.asList(charArray));
     }
     
     /**
      * Запускає комплексну обробку даних з використанням черги.
      * 
-     * Метод завантажує дані, виконує операції з чергою та масивом LocalDateTime.
+     * Метод завантажує дані, виконує операції з чергою та масивом Character.
      */
     public void runDataProcessing() {
-        // спочатку обробляємо чергу дати та часу
+        // спочатку обробляємо чергу символів
         findInQueue();
         locateMinMaxInQueue();
         performQueueOperations();
@@ -57,45 +56,45 @@ public class BasicDataOperationUsingQueue {
         locateMinMaxInArray();
 
         // зберігаємо відсортований масив до файлу
-        DataFileHandler.writeArrayToFile(dateTimeArray, BasicDataOperation.PATH_TO_DATA_FILE + ".sorted");
+        DataFileHandler.writeArrayToFile(charArray, BasicDataOperation.PATH_TO_DATA_FILE + ".sorted");
     }
 
     /**
-     * Сортує масив об'єктiв LocalDateTime та виводить початковий i вiдсортований масиви.
+     * Сортує масив об'єктiв Character та виводить початковий i вiдсортований масиви.
      * Вимiрює та виводить час, витрачений на сортування масиву в наносекундах.
      */
     private void performArraySorting() {
-        // вимірюємо тривалість упорядкування масиву дати та часу
+        // вимірюємо тривалість упорядкування масиву символів
         long timeStart = System.nanoTime();
 
-        Arrays.sort(dateTimeArray);
+        Arrays.sort(charArray);
 
-        PerformanceTracker.displayOperationTime(timeStart, "упорядкування масиву дати i часу");
+        PerformanceTracker.displayOperationTime(timeStart, "упорядкування масиву символів");
     }
 
     /**
-     * Здійснює пошук конкретного значення в масиві дати та часу.
+     * Здійснює пошук конкретного значення в масиві символів.
      */
     private void findInArray() {
         // відстежуємо час виконання пошуку в масиві
         long timeStart = System.nanoTime();
         
-        int position = Arrays.binarySearch(this.dateTimeArray, dateTimeValueToSearch);
+        int position = Arrays.binarySearch(this.charArray, charValueToSearch);
         
-        PerformanceTracker.displayOperationTime(timeStart, "пошук елемента в масивi дати i часу");
+        PerformanceTracker.displayOperationTime(timeStart, "пошук символа в масивi");
 
         if (position >= 0) {
-            System.out.println("Елемент '" + dateTimeValueToSearch + "' знайдено в масивi за позицією: " + position);
+            System.out.println("Символ '" + charValueToSearch + "' знайдено в масивi за позицією: " + position);
         } else {
-            System.out.println("Елемент '" + dateTimeValueToSearch + "' відсутній в масиві.");
+            System.out.println("Символ '" + charValueToSearch + "' відсутній в масиві.");
         }
     }
 
     /**
-     * Визначає найменше та найбільше значення в масиві LocalDateTime.
+     * Визначає найменше та найбільше значення в масиві Character.
      */
     private void locateMinMaxInArray() {
-        if (dateTimeArray == null || dateTimeArray.length == 0) {
+        if (charArray == null || charArray.length == 0) {
             System.out.println("Масив є пустим або не ініціалізованим.");
             return;
         }
@@ -103,47 +102,43 @@ public class BasicDataOperationUsingQueue {
         // відстежуємо час на визначення граничних значень
         long timeStart = System.nanoTime();
 
-        LocalDateTime minValue = dateTimeArray[0];
-        LocalDateTime maxValue = dateTimeArray[0];
+        Character minValue = charArray[0];
+        Character maxValue = charArray[0];
 
-        for (LocalDateTime currentDateTime : dateTimeArray) {
-            if (currentDateTime.isBefore(minValue)) {
-                minValue = currentDateTime;
-            }
-            if (currentDateTime.isAfter(maxValue)) {
-                maxValue = currentDateTime;
-            }
+        for (Character c : charArray) {
+            if (c < minValue) minValue = c;
+            if (c > maxValue) maxValue = c;
         }
 
-        PerformanceTracker.displayOperationTime(timeStart, "визначення мiнiмальної i максимальної дати в масивi");
+        PerformanceTracker.displayOperationTime(timeStart, "визначення мiнiмального i максимального символу в масивi");
 
-        System.out.println("Найменше значення в масивi: " + minValue);
-        System.out.println("Найбільше значення в масивi: " + maxValue);
+        System.out.println("Найменший символ в масивi: " + minValue);
+        System.out.println("Найбільший символ в масивi: " + maxValue);
     }
 
     /**
-     * Здійснює пошук конкретного значення в черзі дати та часу.
+     * Здійснює пошук конкретного значення в черзі символів.
      */
     private void findInQueue() {
         // вимірюємо час пошуку в черзі
         long timeStart = System.nanoTime();
 
-        boolean elementExists = this.dateTimeQueue.contains(dateTimeValueToSearch);
+        boolean elementExists = this.charQueue.contains(charValueToSearch);
 
-        PerformanceTracker.displayOperationTime(timeStart, "пошук елемента в Queue дати i часу");
+        PerformanceTracker.displayOperationTime(timeStart, "пошук символа в Queue");
 
         if (elementExists) {
-            System.out.println("Елемент '" + dateTimeValueToSearch + "' знайдено в Queue");
+            System.out.println("Символ '" + charValueToSearch + "' знайдено в Queue");
         } else {
-            System.out.println("Елемент '" + dateTimeValueToSearch + "' відсутній в Queue.");
+            System.out.println("Символ '" + charValueToSearch + "' відсутній в Queue.");
         }
     }
 
     /**
-     * Визначає найменше та найбільше значення в черзі LocalDateTime.
+     * Визначає найменше та найбільше значення в черзі Character.
      */
     private void locateMinMaxInQueue() {
-        if (dateTimeQueue == null || dateTimeQueue.isEmpty()) {
+        if (charQueue == null || charQueue.isEmpty()) {
             System.out.println("Черга є пустою або не ініціалізованою.");
             return;
         }
@@ -151,31 +146,33 @@ public class BasicDataOperationUsingQueue {
         // відстежуємо час пошуку граничних значень
         long timeStart = System.nanoTime();
 
-        LocalDateTime minValue = Collections.min(dateTimeQueue);
-        LocalDateTime maxValue = Collections.max(dateTimeQueue);
+        Character minValue = Collections.min(charQueue);
+        Character maxValue = Collections.max(charQueue);
 
-        PerformanceTracker.displayOperationTime(timeStart, "визначення мiнiмальної i максимальної дати в Queue");
+        PerformanceTracker.displayOperationTime(timeStart, "визначення мiнiмального i максимального символу в Queue");
 
-        System.out.println("Найменше значення в Queue: " + minValue);
-        System.out.println("Найбільше значення в Queue: " + maxValue);
+        System.out.println("Найменший символ в Queue: " + minValue);
+        System.out.println("Найбільший символ в Queue: " + maxValue);
     }
 
     /**
-     * Виконує операції peek і poll з чергою LocalDateTime.
+     * Виконує операції peek і poll з чергою Character.
      */
     private void performQueueOperations() {
-        if (dateTimeQueue == null || dateTimeQueue.isEmpty()) {
+        if (charQueue == null || charQueue.isEmpty()) {
             System.out.println("Черга є пустою або не ініціалізованою.");
             return;
         }
 
-        LocalDateTime headElement = dateTimeQueue.peek();
+        Character headElement = charQueue.peek();
         System.out.println("Головний елемент черги (peek): " + headElement);
 
-        headElement = dateTimeQueue.poll();
+        headElement = charQueue.poll();
         System.out.println("Видалений елемент черги (poll): " + headElement);
 
-        headElement = dateTimeQueue.peek();
+        headElement = charQueue.peek();
         System.out.println("Новий головний елемент черги: " + headElement);
     }
 }
+
+// Файл актуален — дополнительных изменений не требуется.
