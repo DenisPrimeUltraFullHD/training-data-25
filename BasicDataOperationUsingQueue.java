@@ -18,28 +18,48 @@ public class BasicDataOperationUsingQueue {
         this.charValueToSearch = charValueToSearch;
         this.charArray = charArray;
         this.charQueue = new PriorityQueue<>(Arrays.asList(charArray));
+        System.out.println("\n✅ BasicDataOperationUsingQueue ініціалізована");
+        System.out.println("   Розмір PriorityQueue: " + charQueue.size());
+        System.out.println("   Розмір масиву: " + charArray.length);
+        System.out.println("   Символ для пошуку: '" + charValueToSearch + "'");
     }
 
     /**
      * Запускає комплексну обробку даних з використанням черги.
      */
     public void runDataProcessing() {
+        System.out.println("\n┌─────────────────────────────────────────────┐");
+        System.out.println("│    ОПЕРАЦІЇ З PRIORITYQUEUE<CHARACTER>       │");
+        System.out.println("└─────────────────────────────────────────────┘");
+        
         // спочатку працюємо з чергою
+        System.out.println("\n🔎 ЕТАП 1: ПОШУК І ПОШУК МІН/МАКС (до операцій з чергою)");
         findInQueue();
         locateMinMaxInQueue();
+        
+        System.out.println("\n📋 ЕТАП 2: БАЗОВІ ОПЕРАЦІЇ З PRIORITYQUEUE (peek, poll)");
         performQueueOperations();
 
+        System.out.println("\n┌─────────────────────────────────────────────┐");
+        System.out.println("│    ОПЕРАЦІЇ З МАСИВОМ CHARACTER[]           │");
+        System.out.println("└─────────────────────────────────────────────┘");
+
         // потім з масивом
+        System.out.println("\n🔎 ЕТАП 1: ПОШУК І ПОШУК МІН/МАКС (до сортування)");
         findInArray();
         locateMinMaxInArray();
 
+        System.out.println("\n📊 ЕТАП 2: СОРТУВАННЯ МАСИВУ");
         performArraySorting();
 
+        System.out.println("\n🔎 ЕТАП 3: ПОШУК І ПОШУК МІН/МАКС (після сортування)");
         findInArray();
         locateMinMaxInArray();
 
+        System.out.println("\n💾 ЕТАП 4: ЗБЕРЕЖЕННЯ ВІДСОРТОВАНОГО МАСИВУ");
         // зберігаємо відсортований масив
         DataFileHandler.writeArrayToFile(charArray, BasicDataOperation.PATH_TO_DATA_FILE + ".sorted");
+        System.out.println("✅ Масив успішно збережено в файл");
     }
 
     /**
@@ -126,18 +146,29 @@ public class BasicDataOperationUsingQueue {
      * Демонстрація операцій peek і poll з чергою.
      */
     private void performQueueOperations() {
-        System.out.println("\nДемонстрація операцій з PriorityQueue:");
+        // Рахуємо розмір перед операціями
+        int initialSize = charQueue.size();
+        System.out.println("Розмір PriorityQueue перед операціями: " + initialSize);
         
         // Перегляд першого елемента (без видалення)
+        long timeStart = System.nanoTime();
         Character head = charQueue.peek();
-        System.out.println("Перший елемент (peek): " + head);
+        PerformanceTracker.displayOperationTime(timeStart, "операція peek() на PriorityQueue");
+        System.out.println("→ Перший елемент (peek): '" + head + "'");
 
         // Отримання і видалення першого елемента
+        timeStart = System.nanoTime();
         Character removed = charQueue.poll();
-        System.out.println("Видалений елемент (poll): " + removed);
+        PerformanceTracker.displayOperationTime(timeStart, "операція poll() на PriorityQueue");
+        System.out.println("→ Видалений елемент (poll): '" + removed + "'");
+        System.out.println("   Розмір після poll(): " + charQueue.size());
 
         // Перевірка нового першого елемента
-        head = charQueue.peek();
-        System.out.println("Новий перший елемент: " + head);
+        if (!charQueue.isEmpty()) {
+            head = charQueue.peek();
+            System.out.println("→ Новий перший елемент: '" + head + "'");
+        } else {
+            System.out.println("→ PriorityQueue порожня після операцій");
+        }
     }
 }

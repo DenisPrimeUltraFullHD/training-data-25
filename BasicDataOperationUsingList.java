@@ -25,42 +25,62 @@ public class BasicDataOperationUsingList {
     /**
      * Конструктор, який iнiцiалiзує об'єкт з готовими даними.
      * 
-     * @param dateTimeValueToSearch Значення для пошуку
-     * @param dateTimeArray Масив LocalDateTime
+     * @param charValueToSearch Значення для пошуку
+     * @param charArray Масив Character
      */
     BasicDataOperationUsingList(Character charValueToSearch, Character[] charArray) {
         this.charValueToSearch = charValueToSearch;
         this.charArray = charArray;
         this.charList = new Vector<>(Arrays.asList(charArray));
+        System.out.println("\n✅ BasicDataOperationUsingList ініціалізований");
+        System.out.println("   Розмір Vector: " + charList.size());
+        System.out.println("   Розмір масиву: " + charArray.length);
+        System.out.println("   Символ для пошуку: '" + charValueToSearch + "'");
     }
     
     /**
      * Виконує комплексні операції з структурами даних.
      * 
-     * Метод завантажує масив і список об'єктів LocalDateTime, 
+     * Метод завантажує масив і список об'єктів Character, 
      * здійснює сортування та пошукові операції.
      */
     public void executeDataOperations() {
+        System.out.println("\n┌─────────────────────────────────────────────┐");
+        System.out.println("│    ОПЕРАЦІЇ З VECTOR<CHARACTER>             │");
+        System.out.println("└─────────────────────────────────────────────┘");
+        
         // робота з Vector
+        System.out.println("\n🔎 ЕТАП 1: ПОШУК І ПОШУК МІН/МАКС (до сортування)");
         findInList();
         locateMinMaxInList();
         
+        System.out.println("\n📊 ЕТАП 2: СОРТУВАННЯ VECTOR");
         sortList();
         
+        System.out.println("\n🔎 ЕТАП 3: ПОШУК І ПОШУК МІН/МАКС (після сортування Vector)");
         findInList();
         locateMinMaxInList();
 
+        System.out.println("\n┌─────────────────────────────────────────────┐");
+        System.out.println("│    ОПЕРАЦІЇ З МАСИВОМ CHARACTER[]           │");
+        System.out.println("└─────────────────────────────────────────────┘");
+
         // потім масив
+        System.out.println("\n🔎 ЕТАП 1: ПОШУК І ПОШУК МІН/МАКС (до сортування)");
         findInArray();
         locateMinMaxInArray();
 
+        System.out.println("\n📊 ЕТАП 2: СОРТУВАННЯ МАСИВУ");
         performArraySorting();
         
+        System.out.println("\n🔎 ЕТАП 3: ПОШУК І ПОШУК МІН/МАКС (після сортування)");
         findInArray();
         locateMinMaxInArray();
 
+        System.out.println("\n💾 ЕТАП 4: ЗБЕРЕЖЕННЯ ВІДСОРТОВАНОГО МАСИВУ");
         // зберігаємо відсортований масив до окремого файлу
         DataFileHandler.writeArrayToFile(charArray, BasicDataOperation.PATH_TO_DATA_FILE + ".sorted");
+        System.out.println("✅ Масив успішно збережено в файл");
     }
 
     /**
