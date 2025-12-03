@@ -1,0 +1,105 @@
+========= Операції з LinkedHashMap =========
+Початковий розмір LinkedHashMap: 10
+
+========= Тривалість операції 'пошук за ключем в LinkedHashMap': 311793 нс =========
+Елемент з ключем 'Canary{nickname='Ажур', singing='1', hashCode=993659727}' знайдено. Власник: Василь
+
+========= Тривалість операції 'пошук за значенням в LinkedHashMap (stream)': 11253296 нс =========
+Власника 'Ганна' знайдено. Pet: Canary{nickname='Балакун', singing='2', hashCode=1674497075}
+Власника 'Ганна' знайдено. Pet: Canary{nickname='Ажур', singing='5', hashCode=993659731}
+
+=== Пари ключ-значення в LinkedHashMap ===
+  Canary{nickname='Ажур', singing='1', hashCode=993659727} -> Василь
+  Canary{nickname='Балакун', singing='2', hashCode=1674497075} -> Ганна
+  Canary{nickname='Весна', singing='3', hashCode=794955715} -> Денис
+  Canary{nickname='Грація', singing='4', hashCode=60856345} -> Євгенія
+  Canary{nickname='Ажур', singing='5', hashCode=993659731} -> Ганна
+  Canary{nickname='Дзвіночок', singing='1', hashCode=-836214729} -> Інна
+  Canary{nickname='Еол', singing='2', hashCode=32209825} -> Костянтин
+  Canary{nickname='Жайворонок', singing='3', hashCode=481324612} -> Люба
+  Canary{nickname='Балакун', singing='4', hashCode=1674497077} -> Костянтин
+  Canary{nickname='Зоренька', singing='5', hashCode=1328253365} -> Оксана
+
+========= Тривалість операції 'виведення пари ключ-значення в LinkedHashMap': 1504099 нс =========
+
+========= Тривалість операції 'сортування LinkedHashMap за ключами': 3623960 нс =========
+
+=== Пари ключ-значення в LinkedHashMap ===
+  Canary{nickname='Ажур', singing='1', hashCode=993659727} -> Василь
+  Canary{nickname='Ажур', singing='5', hashCode=993659731} -> Ганна
+  Canary{nickname='Балакун', singing='2', hashCode=1674497075} -> Ганна
+  Canary{nickname='Балакун', singing='4', hashCode=1674497077} -> Костянтин
+  Canary{nickname='Весна', singing='3', hashCode=794955715} -> Денис
+  Canary{nickname='Грація', singing='4', hashCode=60856345} -> Євгенія
+  Canary{nickname='Дзвіночок', singing='1', hashCode=-836214729} -> Інна
+  Canary{nickname='Еол', singing='2', hashCode=32209825} -> Костянтин
+  Canary{nickname='Жайворонок', singing='3', hashCode=481324612} -> Люба
+  Canary{nickname='Зоренька', singing='5', hashCode=1328253365} -> Оксана
+
+========= Тривалість операції 'виведення пари ключ-значення в LinkedHashMap': 3106282 нс =========
+
+========= Тривалість операції 'пошук за ключем в LinkedHashMap': 4700 нс =========
+Елемент з ключем 'Canary{nickname='Ажур', singing='1', hashCode=993659727}' знайдено. Власник: Василь
+
+========= Тривалість операції 'пошук за значенням в LinkedHashMap (stream)': 41000 нс =========
+Власника 'Ганна' знайдено. Pet: Canary{nickname='Ажур', singing='5', hashCode=993659731}
+Власника 'Ганна' знайдено. Pet: Canary{nickname='Балакун', singing='2', hashCode=1674497075}
+
+========= Тривалість операції 'додавання запису до LinkedHashMap': 13231 нс =========
+Додано новий запис: Pet='Canary{nickname='Іскра', singing='3', hashCode=462282501}', власник='Павло'
+
+========= Тривалість операції 'видалення за ключем з LinkedHashMap': 195790 нс =========
+Видалено запис з ключем 'Canary{nickname='Ажур', singing='1', hashCode=993659727}'. Власник був: Василь
+
+========= Тривалість операції 'видалення за значенням з LinkedHashMap': 3413771 нс =========
+Видалено 2 записів з власником 'Ганна'
+Кінцевий розмір LinkedHashMap: 8
+
+
+========= Операції з TreeMap =========
+Початковий розмір TreeMap: 10
+
+========= Тривалість операції 'пошук за ключем в TreeMap': 12840 нс =========
+Елемент з ключем 'Canary{nickname='Ажур', singing='1', hashCode=993659727}' знайдено. Власник: Василь
+
+========= Тривалість операції 'пошук за значенням в TreeMap (stream)': 1418204 нс =========
+Власника 'Ганна' знайдено. Pet: Canary{nickname='Ажур', singing='5', hashCode=993659731}
+Власника 'Ганна' знайдено. Pet: Canary{nickname='Балакун', singing='2', hashCode=1674497075}
+
+=== Пари ключ-значення в TreeMap ===
+  Canary{nickname='Ажур', singing='1', hashCode=993659727} -> Василь
+  Canary{nickname='Ажур', singing='5', hashCode=993659731} -> Ганна
+  Canary{nickname='Балакун', singing='2', hashCode=1674497075} -> Ганна
+  Canary{nickname='Балакун', singing='4', hashCode=1674497077} -> Костянтин
+  Canary{nickname='Весна', singing='3', hashCode=794955715} -> Денис
+  Canary{nickname='Грація', singing='4', hashCode=60856345} -> Євгенія
+  Canary{nickname='Дзвіночок', singing='1', hashCode=-836214729} -> Інна
+  Canary{nickname='Еол', singing='2', hashCode=32209825} -> Костянтин
+  Canary{nickname='Жайворонок', singing='3', hashCode=481324612} -> Люба
+  Canary{nickname='Зоренька', singing='5', hashCode=1328253365} -> Оксана
+
+========= Тривалість операції 'виведення пар ключ-значення в TreeMap': 857159 нс =========
+
+========= Тривалість операції 'додавання запису до TreeMap': 7323 нс =========
+Додано новий запис: Pet='Canary{nickname='Іскра', singing='3', hashCode=462282501}', власник='Павло'
+
+========= Тривалість операції 'видалення за ключем з TreeMap': 15507 нс =========
+Видалено запис з ключем 'Canary{nickname='Ажур', singing='1', hashCode=993659727}'. Власник був: Василь
+
+========= Тривалість операції 'видалення за значенням з TreeMap': 3111457 нс =========
+Видалено 2 записів з власником 'Ганна'
+Кінцевий розмір TreeMap: 8
+
+=== Порівняння продуктивності Map ===
+
+========= Тривалість операції 'додавання в HashMap': 9087 нс =========
+
+========= Тривалість операції 'додавання в LinkedHashMap': 5185 нс =========
+
+========= Тривалість операції 'додавання в TreeMap': 9634 нс =========
+
+========= Тривалість операції 'пошук в HashMap': 4597 нс =========
+
+========= Тривалість операції 'пошук в LinkedHashMap': 3122 нс =========
+
+========= Тривалість операції 'пошук в TreeMap': 11932 нс =========

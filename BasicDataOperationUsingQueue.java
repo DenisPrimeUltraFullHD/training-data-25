@@ -2,6 +2,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.PriorityQueue;
 import java.util.Queue;
+import java.util.stream.Collectors;
 
 /**
  * Клас BasicDataOperationUsingQueue реалізує операції з чергою PriorityQueue для Character.
@@ -67,7 +68,9 @@ public class BasicDataOperationUsingQueue {
      */
     private void performArraySorting() {
         long timeStart = System.nanoTime();
-        Arrays.sort(charArray);
+        charArray = Arrays.stream(charArray)
+                .sorted()
+                .toArray(Character[]::new);
         PerformanceTracker.displayOperationTime(timeStart, "упорядкування масиву символів");
     }
 
@@ -76,7 +79,12 @@ public class BasicDataOperationUsingQueue {
      */
     private void findInArray() {
         long timeStart = System.nanoTime();
-        int position = Arrays.binarySearch(this.charArray, charValueToSearch);
+        int position = Arrays.stream(this.charArray)
+                .map(elem -> Arrays.asList(this.charArray).indexOf(elem))
+                .filter(i -> charValueToSearch.equals(this.charArray[i]))
+                .findFirst()
+                .orElse(-1);
+
         PerformanceTracker.displayOperationTime(timeStart, "пошук символа в масивi");
 
         if (position >= 0) {
@@ -96,13 +104,13 @@ public class BasicDataOperationUsingQueue {
         }
 
         long timeStart = System.nanoTime();
-        Character minValue = charArray[0];
-        Character maxValue = charArray[0];
+        Character minValue = Arrays.stream(charArray)
+                .min(Character::compareTo)
+                .orElse(null);
 
-        for (Character c : charArray) {
-            if (c < minValue) minValue = c;
-            if (c > maxValue) maxValue = c;
-        }
+        Character maxValue = Arrays.stream(charArray)
+                .max(Character::compareTo)
+                .orElse(null);
 
         PerformanceTracker.displayOperationTime(timeStart, "визначення мiнiмального i максимального символу в масивi");
         System.out.println("Найменший символ в масивi: " + minValue);
@@ -114,7 +122,7 @@ public class BasicDataOperationUsingQueue {
      */
     private void findInQueue() {
         long timeStart = System.nanoTime();
-        boolean found = charQueue.contains(charValueToSearch);
+        boolean found = charQueue.stream().anyMatch(ch -> ch.equals(charValueToSearch));
         PerformanceTracker.displayOperationTime(timeStart, "пошук символа в PriorityQueue");
 
         if (found) {
@@ -134,8 +142,13 @@ public class BasicDataOperationUsingQueue {
         }
 
         long timeStart = System.nanoTime();
-        Character minValue = Collections.min(charQueue);
-        Character maxValue = Collections.max(charQueue);
+        Character minValue = charQueue.stream()
+                .min(Character::compareTo)
+                .orElse(null);
+
+        Character maxValue = charQueue.stream()
+                .max(Character::compareTo)
+                .orElse(null);
 
         PerformanceTracker.displayOperationTime(timeStart, "визначення мiнiмального i максимального символу в PriorityQueue");
         System.out.println("Найменший символ в PriorityQueue: " + minValue);

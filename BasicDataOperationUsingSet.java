@@ -2,6 +2,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 /**
  * Клас BasicDataOperationUsingSet реалізує операції з множиною TreeSet для Character.
@@ -64,7 +65,9 @@ public class BasicDataOperationUsingSet {
      */
     private void performArraySorting() {
         long timeStart = System.nanoTime();
-        Arrays.sort(charArray);
+        charArray = Arrays.stream(charArray)
+                .sorted()
+                .toArray(Character[]::new);
         PerformanceTracker.displayOperationTime(timeStart, "упорядкування масиву символів");
     }
 
@@ -73,7 +76,12 @@ public class BasicDataOperationUsingSet {
      */
     private void findInArray() {
         long timeStart = System.nanoTime();
-        int position = Arrays.binarySearch(this.charArray, charValueToSearch);
+        int position = Arrays.stream(this.charArray)
+                .map(elem -> Arrays.asList(this.charArray).indexOf(elem))
+                .filter(i -> charValueToSearch.equals(this.charArray[i]))
+                .findFirst()
+                .orElse(-1);
+
         PerformanceTracker.displayOperationTime(timeStart, "пошук символа в масивi");
         if (position >= 0) {
             System.out.println("Символ '" + charValueToSearch + "' знайдено в масивi за позицією: " + position);
@@ -91,12 +99,14 @@ public class BasicDataOperationUsingSet {
             return;
         }
         long timeStart = System.nanoTime();
-        Character minValue = charArray[0];
-        Character maxValue = charArray[0];
-        for (Character c : charArray) {
-            if (c < minValue) minValue = c;
-            if (c > maxValue) maxValue = c;
-        }
+        Character minValue = Arrays.stream(charArray)
+                .min(Character::compareTo)
+                .orElse(null);
+
+        Character maxValue = Arrays.stream(charArray)
+                .max(Character::compareTo)
+                .orElse(null);
+
         PerformanceTracker.displayOperationTime(timeStart, "визначення мiнiмального i максимального символу в масивi");
         System.out.println("Найменший символ в масивi: " + minValue);
         System.out.println("Найбільший символ в масивi: " + maxValue);
@@ -107,7 +117,7 @@ public class BasicDataOperationUsingSet {
      */
     private void findInSet() {
         long timeStart = System.nanoTime();
-        boolean elementExists = this.charSet.contains(charValueToSearch);
+        boolean elementExists = this.charSet.stream().anyMatch(ch -> ch.equals(charValueToSearch));
         PerformanceTracker.displayOperationTime(timeStart, "пошук символа в TreeSet");
         if (elementExists) {
             System.out.println("Символ '" + charValueToSearch + "' знайдено в TreeSet");
@@ -138,14 +148,8 @@ public class BasicDataOperationUsingSet {
     private void analyzeArrayAndSet() {
         System.out.println("Кiлькiсть елементiв в масивi: " + (charArray == null ? 0 : charArray.length));
         System.out.println("Кiлькiсть елементiв в TreeSet: " + (charSet == null ? 0 : charSet.size()));
-
-        boolean allElementsPresent = true;
-        for (Character ch : charArray) {
-            if (!charSet.contains(ch)) {
-                allElementsPresent = false;
-                break;
-            }
-        }
+        boolean allElementsPresent = Arrays.stream(charArray)
+                .allMatch(charSet::contains);
 
         if (allElementsPresent) {
             System.out.println("Всi елементи масиву наявні в TreeSet.");
