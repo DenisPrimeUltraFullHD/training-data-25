@@ -2,6 +2,7 @@ import java.util.Vector;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Клас BasicDataOperationUsingList реалізує операції з колекцією Vector<Character>.
@@ -90,7 +91,9 @@ public class BasicDataOperationUsingList {
     void performArraySorting() {
         long timeStart = System.nanoTime();
 
-        Arrays.sort(charArray);
+        charArray = Arrays.stream(charArray)
+                .sorted()
+                .toArray(Character[]::new);
 
         PerformanceTracker.displayOperationTime(timeStart, "упорядкування масиву символів");
     }
@@ -101,7 +104,11 @@ public class BasicDataOperationUsingList {
     void findInArray() {
         long timeStart = System.nanoTime();
 
-        int position = Arrays.binarySearch(this.charArray, charValueToSearch);
+        int position = Arrays.stream(this.charArray)
+                .map(elem -> Arrays.asList(this.charArray).indexOf(elem))
+                .filter(i -> charValueToSearch.equals(this.charArray[i]))
+                .findFirst()
+                .orElse(-1);
 
         PerformanceTracker.displayOperationTime(timeStart, "пошук символа в масивi");
 
@@ -122,14 +129,13 @@ public class BasicDataOperationUsingList {
         }
 
         long timeStart = System.nanoTime();
+        Character minValue = Arrays.stream(charArray)
+                .min(Character::compareTo)
+                .orElse(null);
 
-        Character minValue = charArray[0];
-        Character maxValue = charArray[0];
-
-        for (Character c : charArray) {
-            if (c < minValue) minValue = c;
-            if (c > maxValue) maxValue = c;
-        }
+        Character maxValue = Arrays.stream(charArray)
+                .max(Character::compareTo)
+                .orElse(null);
 
         PerformanceTracker.displayOperationTime(timeStart, "визначення мiнiмального i максимального символу в масивi");
 
@@ -143,7 +149,11 @@ public class BasicDataOperationUsingList {
     void findInList() {
         long timeStart = System.nanoTime();
 
-        int position = Collections.binarySearch(this.charList, charValueToSearch);
+        int position = this.charList.stream()
+                .map(this.charList::indexOf)
+                .filter(i -> charValueToSearch.equals(this.charList.get(i)))
+                .findFirst()
+                .orElse(-1);
 
         PerformanceTracker.displayOperationTime(timeStart, "пошук символа в Vector");        
 
@@ -164,9 +174,13 @@ public class BasicDataOperationUsingList {
         }
 
         long timeStart = System.nanoTime();
+        Character minValue = charList.stream()
+            .min(Character::compareTo)
+                .orElse(null);
 
-        Character minValue = Collections.min(charList);
-        Character maxValue = Collections.max(charList);
+        Character maxValue = charList.stream()
+                .max(Character::compareTo)
+                .orElse(null);
 
         PerformanceTracker.displayOperationTime(timeStart, "визначення мiнiмального i максимального символу в Vector");
 
@@ -181,7 +195,9 @@ public class BasicDataOperationUsingList {
     void sortList() {
         long timeStart = System.nanoTime();
 
-        Collections.sort(charList);
+        charList = charList.stream()
+                .sorted()
+                .collect(Collectors.toCollection(Vector::new));
 
         PerformanceTracker.displayOperationTime(timeStart, "упорядкування Vector символiв");
     }
