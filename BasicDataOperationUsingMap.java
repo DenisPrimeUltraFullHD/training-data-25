@@ -9,83 +9,84 @@ import java.util.stream.Collectors;
 /**
  * Клас BasicDataOperationUsingMap реалізує операції з колекціями типу Map для зберігання пар ключ-значення.
  * 
- * <p>Методи класу:</p>
+ * <p>Характеристики:</p>
  * <ul>
- *   <li>{@link #executeDataOperations()} - Виконує комплекс операцій з даними Map.</li>
- *   <li>{@link #findByKey()} - Здійснює пошук елемента за ключем в Map.</li>
- *   <li>{@link #findByValue()} - Здійснює пошук елемента за значенням в Map.</li>
- *   <li>{@link #addEntry()} - Додає новий запис до Map.</li>
- *   <li>{@link #removeByKey()} - Видаляє запис з Map за ключем.</li>
- *   <li>{@link #removeByValue()} - Видаляє записи з Map за значенням.</li>
- *   <li>{@link #sortByKey()} - Сортує Map за ключами.</li>
- *   <li>{@link #sortByValue()} - Сортує Map за значеннями.</li>
+ *   <li>Класс Canary (канарка) з полями: nickname (кличка), singing (співочість)</li>
+ *   <li>Comparator для сортування за nickname та singing (обидва за зростанням)</li>
+ *   <li>Операції з LinkedHashMap та TreeMap</li>
+ *   <li>Аналіз продуктивності обох типів Map</li>
  * </ul>
  */
 public class BasicDataOperationUsingMap {
-    private final Pet KEY_TO_SEARCH_AND_DELETE = new Pet("Ажур", "1");
-    private final Pet KEY_TO_ADD = new Pet("Іскра", "3");
-
-    private final String VALUE_TO_SEARCH_AND_DELETE = "Ганна";
-    private final String VALUE_TO_ADD = "Павло";
-
-    private LinkedHashMap<Pet, String> linkedHashMap;
-    private TreeMap<Pet, String> treeMap;
-
     /**
-     * Клас Pet для зберігання інформації про домашню тварину.
-     * Реалізований як простий data class з автоматичним генеруванням методів equals(), hashCode(), та toString().
-     * Еквівалент Java 14+ record, але сумісний з Java 11.
+     * Java Record еквівалент для зберігання інформації про домашню тварину Canary (канарка).
+     * Еквівалент: public record Canary(String nickname, String singing) {}
+     * Реалізований як data class, сумісний з Java 11.
+     * 
+     * Характеристики:
+     * - nickname: кличка канарки
+     * - singing: співочість (рівень співу)
      */
-    public static class Pet {
+    public static final class Canary {
         private final String nickname;
-        private final String species;
+        private final String singing;
 
-        public Pet(String nickname, String species) {
+        public Canary(String nickname, String singing) {
             this.nickname = nickname;
-            this.species = species;
+            this.singing = singing;
         }
 
         public String nickname() {
             return nickname;
         }
 
-        public String species() {
-            return species;
+        public String singing() {
+            return singing;
         }
 
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
-            Pet pet = (Pet) o;
-            return nickname.equals(pet.nickname) && species.equals(pet.species);
+            Canary canary = (Canary) o;
+            return nickname.equals(canary.nickname) && singing.equals(canary.singing);
         }
 
         @Override
         public int hashCode() {
-            return 31 * nickname.hashCode() + species.hashCode();
+            return 31 * nickname.hashCode() + singing.hashCode();
         }
 
         @Override
         public String toString() {
-            return "Pet{" + "nickname='" + nickname + '\'' + ", species='" + species + '\'' + '}';
+            return "Canary{" + "nickname='" + nickname + '\'' + ", singing='" + singing + '\'' + '}';
         }
     }
 
     /**
-     * Компаратор для сортування Pet за nickname та species.
-     * Спочатку сортує за nickname за зростанням, потім за species у зворотному порядку.
+     * Компаратор для сортування Canary за nickname та singing.
+     * Спочатку сортує за nickname за зростанням (A->Z),
+     * потім за singing за зростанням (за номерами/буквами) для однакових nickname.
      */
-    private static final Comparator<Pet> PET_COMPARATOR = 
-        Comparator.comparing(Pet::nickname).thenComparing(Pet::species, Comparator.reverseOrder());
+    private static final Comparator<Canary> CANARY_COMPARATOR = 
+        Comparator.comparing(Canary::nickname).thenComparing(Canary::singing);
+
+    private final Canary KEY_TO_SEARCH_AND_DELETE = new Canary("Ажур", "1");
+    private final Canary KEY_TO_ADD = new Canary("Іскра", "3");
+
+    private final String VALUE_TO_SEARCH_AND_DELETE = "Ганна";
+    private final String VALUE_TO_ADD = "Павло";
+
+    private LinkedHashMap<Canary, String> linkedHashMap;
+    private TreeMap<Canary, String> treeMap;
 
     /**
      * Конструктор, який ініціалізує об'єкт з готовими даними.
      * 
-     * @param linkedHashMap LinkedHashMap з початковими даними (ключ: Pet, значення: ім'я власника)
-     * @param treeMap TreeMap з початковими даними (ключ: Pet, значення: ім'я власника)
+     * @param linkedHashMap LinkedHashMap з початковими даними (ключ: Canary, значення: ім'я власника)
+     * @param treeMap TreeMap з початковими даними (ключ: Canary, значення: ім'я власника)
      */
-    BasicDataOperationUsingMap(LinkedHashMap<Pet, String> linkedHashMap, TreeMap<Pet, String> treeMap) {
+    BasicDataOperationUsingMap(LinkedHashMap<Canary, String> linkedHashMap, TreeMap<Canary, String> treeMap) {
         this.linkedHashMap = linkedHashMap;
         this.treeMap = treeMap;
     }
@@ -139,7 +140,6 @@ public class BasicDataOperationUsingMap {
         compareMapPerformance();
     }
 
-
     // ===== Методи для LinkedHashMap =====
 
     /**
@@ -150,7 +150,7 @@ public class BasicDataOperationUsingMap {
         System.out.println("\n=== Пари ключ-значення в LinkedHashMap ===");
         long timeStart = System.nanoTime();
 
-        for (Map.Entry<Pet, String> entry : linkedHashMap.entrySet()) {
+        for (Map.Entry<Canary, String> entry : linkedHashMap.entrySet()) {
             System.out.println("  " + entry.getKey() + " -> " + entry.getValue());
         }
 
@@ -159,15 +159,15 @@ public class BasicDataOperationUsingMap {
 
     /**
      * Сортує LinkedHashMap за ключами.
-     * Використовує PET_COMPARATOR для сортування ключів Pet за nickname та species.
+     * Використовує CANARY_COMPARATOR для сортування ключів Canary за nickname та singing.
      * Перезаписує linkedHashMap відсортованими даними.
      */
     private void sortLinkedHashMap() {
         long timeStart = System.nanoTime();
 
-        // Використовуємо PET_COMPARATOR для сортування за nickname та species
+        // Використовуємо CANARY_COMPARATOR для сортування за nickname та singing
         linkedHashMap = linkedHashMap.entrySet().stream()
-                .sorted(Map.Entry.comparingByKey(PET_COMPARATOR))
+                .sorted(Map.Entry.comparingByKey(CANARY_COMPARATOR))
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
                         Map.Entry::getValue,
@@ -205,7 +205,7 @@ public class BasicDataOperationUsingMap {
     void findByValueInLinkedHashMap() {
         long timeStart = System.nanoTime();
 
-        Map.Entry<Pet, String> foundEntry = linkedHashMap.entrySet().stream()
+        Map.Entry<Canary, String> foundEntry = linkedHashMap.entrySet().stream()
                 .filter(entry -> entry.getValue() != null && entry.getValue().equals(VALUE_TO_SEARCH_AND_DELETE))
                 .findFirst()
                 .orElse(null);
@@ -213,7 +213,7 @@ public class BasicDataOperationUsingMap {
         PerformanceTracker.displayOperationTime(timeStart, "пошук за значенням в LinkedHashMap");
 
         if (foundEntry != null) {
-            System.out.println("Власника '" + VALUE_TO_SEARCH_AND_DELETE + "' знайдено. Pet: " + foundEntry.getKey());
+            System.out.println("Власника '" + VALUE_TO_SEARCH_AND_DELETE + "' знайдено. Canary: " + foundEntry.getKey());
         } else {
             System.out.println("Власник '" + VALUE_TO_SEARCH_AND_DELETE + "' відсутній в LinkedHashMap.");
         }
@@ -229,7 +229,7 @@ public class BasicDataOperationUsingMap {
 
         PerformanceTracker.displayOperationTime(timeStart, "додавання запису до LinkedHashMap");
 
-        System.out.println("Додано новий запис: Pet='" + KEY_TO_ADD + "', власник='" + VALUE_TO_ADD + "'");
+        System.out.println("Додано новий запис: Canary='" + KEY_TO_ADD + "', власник='" + VALUE_TO_ADD + "'");
     }
 
     /**
@@ -256,7 +256,7 @@ public class BasicDataOperationUsingMap {
     void removeByValueFromLinkedHashMap() {
         long timeStart = System.nanoTime();
 
-        List<Pet> keysToRemove = linkedHashMap.entrySet().stream()
+        List<Canary> keysToRemove = linkedHashMap.entrySet().stream()
                 .filter(entry -> entry.getValue() != null && entry.getValue().equals(VALUE_TO_SEARCH_AND_DELETE))
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
@@ -272,13 +272,13 @@ public class BasicDataOperationUsingMap {
 
     /**
      * Виводить вміст TreeMap.
-     * TreeMap автоматично відсортована за ключами (Pet nickname за зростанням, species за зростанням).
+     * TreeMap автоматично відсортована за ключами (Canary nickname та singing за зростанням).
      */
     private void printTreeMap() {
         System.out.println("\n=== Пари ключ-значення в TreeMap ===");
 
         long timeStart = System.nanoTime();
-        for (Map.Entry<Pet, String> entry : treeMap.entrySet()) {
+        for (Map.Entry<Canary, String> entry : treeMap.entrySet()) {
             System.out.println("  " + entry.getKey() + " -> " + entry.getValue());
         }
 
@@ -312,7 +312,7 @@ public class BasicDataOperationUsingMap {
     void findByValueInTreeMap() {
         long timeStart = System.nanoTime();
 
-        Map.Entry<Pet, String> foundEntry = treeMap.entrySet().stream()
+        Map.Entry<Canary, String> foundEntry = treeMap.entrySet().stream()
                 .filter(entry -> entry.getValue() != null && entry.getValue().equals(VALUE_TO_SEARCH_AND_DELETE))
                 .findFirst()
                 .orElse(null);
@@ -320,7 +320,7 @@ public class BasicDataOperationUsingMap {
         PerformanceTracker.displayOperationTime(timeStart, "пошук за значенням в TreeMap");
 
         if (foundEntry != null) {
-            System.out.println("Власника '" + VALUE_TO_SEARCH_AND_DELETE + "' знайдено. Pet: " + foundEntry.getKey());
+            System.out.println("Власника '" + VALUE_TO_SEARCH_AND_DELETE + "' знайдено. Canary: " + foundEntry.getKey());
         } else {
             System.out.println("Власник '" + VALUE_TO_SEARCH_AND_DELETE + "' відсутній в TreeMap.");
         }
@@ -336,7 +336,7 @@ public class BasicDataOperationUsingMap {
 
         PerformanceTracker.displayOperationTime(timeStart, "додавання запису до TreeMap");
 
-        System.out.println("Додано новий запис: Pet='" + KEY_TO_ADD + "', власник='" + VALUE_TO_ADD + "'");
+        System.out.println("Додано новий запис: Canary='" + KEY_TO_ADD + "', власник='" + VALUE_TO_ADD + "'");
     }
 
     /**
@@ -363,7 +363,7 @@ public class BasicDataOperationUsingMap {
     void removeByValueFromTreeMap() {
         long timeStart = System.nanoTime();
 
-        List<Pet> keysToRemove = treeMap.entrySet().stream()
+        List<Canary> keysToRemove = treeMap.entrySet().stream()
                 .filter(entry -> entry.getValue() != null && entry.getValue().equals(VALUE_TO_SEARCH_AND_DELETE))
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
@@ -376,8 +376,8 @@ public class BasicDataOperationUsingMap {
     }
 
     /**
-     * Додатковий метод для порівняння продуктивності різних типів Map.
-     * Аналізує швидкість обробки даних для операцій додавання, пошуку та видалення.
+     * Додатковий метод для порівняння продуктивності LinkedHashMap та TreeMap.
+     * Аналізує швидкість обробки даних для операцій додавання та пошуку.
      */
     private void compareMapPerformance() {
         System.out.println("\n\n=== АНАЛІЗ ШВИДКОСТІ ОБРОБКИ ДАНИХ ===\n");
@@ -387,77 +387,56 @@ public class BasicDataOperationUsingMap {
         // Підготовка тестових даних
         System.out.println("📊 Тестування з " + testSize + " елементами\n");
         
-        // ===== HashMap =====
-        System.out.println("1️⃣  HashMap:");
+        // ===== LinkedHashMap =====
+        System.out.println("1️⃣  LinkedHashMap:");
         System.out.println("-".repeat(50));
-        HashMap<Pet, String> hashMap = new HashMap<>();
+        LinkedHashMap<Canary, String> linkedMap = new LinkedHashMap<>();
         
         long startTime = System.nanoTime();
         for (int i = 0; i < testSize; i++) {
-            hashMap.put(new Pet("Pet" + i, "Species" + (i % 5)), "Owner" + i);
-        }
-        long hashMapAddTime = System.nanoTime() - startTime;
-        PerformanceTracker.displayOperationTime(System.nanoTime() - hashMapAddTime, "додавання " + testSize + " елементів");
-        
-        startTime = System.nanoTime();
-        for (int i = 0; i < testSize / 2; i++) {
-            hashMap.get(new Pet("Pet" + i, "Species" + (i % 5)));
-        }
-        long hashMapSearchTime = System.nanoTime() - startTime;
-        PerformanceTracker.displayOperationTime(System.nanoTime() - hashMapSearchTime, "пошук " + (testSize / 2) + " елементів");
-        
-        // ===== LinkedHashMap =====
-        System.out.println("\n2️⃣  LinkedHashMap:");
-        System.out.println("-".repeat(50));
-        LinkedHashMap<Pet, String> linkedMap = new LinkedHashMap<>();
-        
-        startTime = System.nanoTime();
-        for (int i = 0; i < testSize; i++) {
-            linkedMap.put(new Pet("Pet" + i, "Species" + (i % 5)), "Owner" + i);
+            linkedMap.put(new Canary("Canary" + i, String.valueOf(i % 5)), "Owner" + i);
         }
         long linkedMapAddTime = System.nanoTime() - startTime;
         PerformanceTracker.displayOperationTime(System.nanoTime() - linkedMapAddTime, "додавання " + testSize + " елементів");
         
         startTime = System.nanoTime();
         for (int i = 0; i < testSize / 2; i++) {
-            linkedMap.get(new Pet("Pet" + i, "Species" + (i % 5)));
+            linkedMap.get(new Canary("Canary" + i, String.valueOf(i % 5)));
         }
         long linkedMapSearchTime = System.nanoTime() - startTime;
         PerformanceTracker.displayOperationTime(System.nanoTime() - linkedMapSearchTime, "пошук " + (testSize / 2) + " елементів");
         
-        // ===== TreeMap =====
-        System.out.println("\n3️⃣  TreeMap:");
+        // ===== TreeMap з CANARY_COMPARATOR =====
+        System.out.println("\n2️⃣  TreeMap (з Comparator):");
         System.out.println("-".repeat(50));
-        TreeMap<Pet, String> treeMapTest = new TreeMap<>(PET_COMPARATOR);
+        TreeMap<Canary, String> treeMapTest = new TreeMap<>(CANARY_COMPARATOR);
         
         startTime = System.nanoTime();
         for (int i = 0; i < testSize; i++) {
-            treeMapTest.put(new Pet("Pet" + i, "Species" + (i % 5)), "Owner" + i);
+            treeMapTest.put(new Canary("Canary" + i, String.valueOf(i % 5)), "Owner" + i);
         }
         long treeMapAddTime = System.nanoTime() - startTime;
         PerformanceTracker.displayOperationTime(System.nanoTime() - treeMapAddTime, "додавання " + testSize + " елементів");
         
         startTime = System.nanoTime();
         for (int i = 0; i < testSize / 2; i++) {
-            treeMapTest.get(new Pet("Pet" + i, "Species" + (i % 5)));
+            treeMapTest.get(new Canary("Canary" + i, String.valueOf(i % 5)));
         }
         long treeMapSearchTime = System.nanoTime() - startTime;
         PerformanceTracker.displayOperationTime(System.nanoTime() - treeMapSearchTime, "пошук " + (testSize / 2) + " елементів");
         
         // ===== Підсумок =====
         System.out.println("\n\n📈 ПОРІВНЯЛЬНА ТАБЛИЦЯ:\n");
-        System.out.println(String.format("%-20s | %-20s | %-20s", "Операція", "HashMap", "LinkedHashMap"));
-        System.out.println("-".repeat(65));
-        System.out.println(String.format("%-20s | %-20d | %-20d", "Додавання (мкс)", hashMapAddTime / 1000, linkedMapAddTime / 1000));
-        System.out.println(String.format("%-20s | %-20d | %-20d", "Пошук (мкс)", hashMapSearchTime / 1000, linkedMapSearchTime / 1000));
-        System.out.println("-".repeat(65));
-        System.out.println(String.format("%-20s | %-20d", "TreeMap - Додавання (мкс)", treeMapAddTime / 1000));
-        System.out.println(String.format("%-20s | %-20d", "TreeMap - Пошук (мкс)", treeMapSearchTime / 1000));
+        System.out.println(String.format("%-25s | %-20s | %-20s", "Операція", "LinkedHashMap", "TreeMap"));
+        System.out.println("-".repeat(70));
+        System.out.println(String.format("%-25s | %-20d | %-20d", "Додавання (мкс)", linkedMapAddTime / 1000, treeMapAddTime / 1000));
+        System.out.println(String.format("%-25s | %-20d | %-20d", "Пошук (мкс)", linkedMapSearchTime / 1000, treeMapSearchTime / 1000));
+        System.out.println("-".repeat(70));
         
         System.out.println("\n\n📌 ВИСНОВКИ:");
-        System.out.println("• HashMap: найшвидший для додавання та пошуку O(1)");
-        System.out.println("• LinkedHashMap: збереження порядку вставки з незначним уповільненням");
-        System.out.println("• TreeMap: автоматичне сортування, але повільніше O(log n)");
+        System.out.println("• LinkedHashMap: збереження порядку вставки, швидкий пошук O(1)");
+        System.out.println("• TreeMap: автоматичне сортування за Comparator, але повільніше O(log n)");
+        System.out.println("• TreeMap завжди відсортована, тоді як LinkedHashMap потребує явного сортування");
     }
 
     /**
@@ -465,30 +444,30 @@ public class BasicDataOperationUsingMap {
      */
     public static void main(String[] args) {
         // Створюємо початкові дані для LinkedHashMap
-        LinkedHashMap<Pet, String> linkedHashMap = new LinkedHashMap<>();
-        linkedHashMap.put(new Pet("Ажур", "1"), "Василь");
-        linkedHashMap.put(new Pet("Балакун", "2"), "Ганна");
-        linkedHashMap.put(new Pet("Весна", "3"), "Денис");
-        linkedHashMap.put(new Pet("Грація", "4"), "Євгенія");
-        linkedHashMap.put(new Pet("Ажур", "5"), "Ганна");
-        linkedHashMap.put(new Pet("Дзвіночок", "1"), "Інна");
-        linkedHashMap.put(new Pet("Еол", "2"), "Костянтин");
-        linkedHashMap.put(new Pet("Жайворонок", "3"), "Люба");
-        linkedHashMap.put(new Pet("Балакун", "4"), "Костянтин");
-        linkedHashMap.put(new Pet("Зоренька", "5"), "Оксана");
+        LinkedHashMap<Canary, String> linkedHashMap = new LinkedHashMap<>();
+        linkedHashMap.put(new Canary("Ажур", "1"), "Василь");
+        linkedHashMap.put(new Canary("Балакун", "2"), "Ганна");
+        linkedHashMap.put(new Canary("Весна", "3"), "Денис");
+        linkedHashMap.put(new Canary("Грація", "4"), "Євгенія");
+        linkedHashMap.put(new Canary("Ажур", "5"), "Ганна");
+        linkedHashMap.put(new Canary("Дзвіночок", "1"), "Інна");
+        linkedHashMap.put(new Canary("Еол", "2"), "Костянтин");
+        linkedHashMap.put(new Canary("Жайворонок", "3"), "Люба");
+        linkedHashMap.put(new Canary("Балакун", "4"), "Костянтин");
+        linkedHashMap.put(new Canary("Зоренька", "5"), "Оксана");
 
-        // Створюємо такі ж дані для TreeMap
-        TreeMap<Pet, String> treeMap = new TreeMap<>(PET_COMPARATOR);
-        treeMap.put(new Pet("Ажур", "1"), "Василь");
-        treeMap.put(new Pet("Балакун", "2"), "Ганна");
-        treeMap.put(new Pet("Весна", "3"), "Денис");
-        treeMap.put(new Pet("Грація", "4"), "Євгенія");
-        treeMap.put(new Pet("Ажур", "5"), "Ганна");
-        treeMap.put(new Pet("Дзвіночок", "1"), "Інна");
-        treeMap.put(new Pet("Еол", "2"), "Костянтин");
-        treeMap.put(new Pet("Жайворонок", "3"), "Люба");
-        treeMap.put(new Pet("Балакун", "4"), "Костянтин");
-        treeMap.put(new Pet("Зоренька", "5"), "Оксана");
+        // Створюємо такі ж дані для TreeMap з CANARY_COMPARATOR
+        TreeMap<Canary, String> treeMap = new TreeMap<>(CANARY_COMPARATOR);
+        treeMap.put(new Canary("Ажур", "1"), "Василь");
+        treeMap.put(new Canary("Балакун", "2"), "Ганна");
+        treeMap.put(new Canary("Весна", "3"), "Денис");
+        treeMap.put(new Canary("Грація", "4"), "Євгенія");
+        treeMap.put(new Canary("Ажур", "5"), "Ганна");
+        treeMap.put(new Canary("Дзвіночок", "1"), "Інна");
+        treeMap.put(new Canary("Еол", "2"), "Костянтин");
+        treeMap.put(new Canary("Жайворонок", "3"), "Люба");
+        treeMap.put(new Canary("Балакун", "4"), "Костянтин");
+        treeMap.put(new Canary("Зоренька", "5"), "Оксана");
 
         BasicDataOperationUsingMap operations = new BasicDataOperationUsingMap(linkedHashMap, treeMap);
         operations.executeDataOperations();
