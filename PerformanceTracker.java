@@ -1,7 +1,7 @@
 /**
  * Клас PerformanceTracker відстежує продуктивність операцій з даними.
  */
-public class PerformanceTracker {
+public final class PerformanceTracker {
     /**
      * Відображає тривалість виконання операції в наносекундах.
      * 
@@ -9,8 +9,8 @@ public class PerformanceTracker {
      * @param operationName Назва операції.
      */
     public static void displayOperationTime(long startTime, String operationName) {
-        long finishTime = System.nanoTime();
-        long executionTime = (finishTime - startTime);
-        System.out.println("\n========= Тривалість операції '" + operationName + "': " + executionTime + " нс =========");
+        long elapsedNs = System.nanoTime() - startTime;
+        double elapsedMs = elapsedNs / 1_000_000.0;
+        System.out.printf("  [Performance] %s: %d ns (%.3f ms)%n", operationName, elapsedNs, elapsedMs);
     }
 }
